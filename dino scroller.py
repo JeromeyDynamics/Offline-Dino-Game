@@ -38,11 +38,8 @@ dinosaur_last_update = 0
 
 # Jumping variables
 is_jumping = False
-# Adjusted jumping variables for farther and less high jumps
-jump_velocity = -10   # Reduced jump velocity for less height
-gravity = 0.2         # Reduced gravity for a longer, farther jump
-jump_height = 200
-current_jump_height = 0
+jump_velocity = -5  # Reduced upward velocity for a flatter jump
+gravity = 0.1       # Reduced gravity for a slower descent
 
 #score variable
 score = 0
@@ -56,9 +53,10 @@ def spawn_cacti():
     global cactus_positions
     cactus_positions = []
     num_cacti = random.choices([1, 2, 3], weights=[70, 25, 5])[0]  # 70% chance for 1, 25% for 2, 5% for 3
+    base_position = cactus_x  # Start position for the first cactus
     for i in range(num_cacti):
-        offset = i * random.randint(100, 200)  # Random spacing between cacti
-        cactus_positions.append(cactus_x + offset)
+        offset = random.randint(15, 50)  # Small random spacing between cacti
+        cactus_positions.append(base_position + i * offset)
 
 # Spawn initial cacti
 spawn_cacti()
@@ -97,10 +95,10 @@ while running:
       dinosaur_y += jump_velocity
       jump_velocity += gravity  # Use the adjusted gravity value
 
-      if dinosaur_y>=130:
-        is_jumping = False
-        dinosaur_y = 130
-        jump_velocity = -10  # Reset jump velocity
+      if dinosaur_y >= 130:
+          is_jumping = False
+          dinosaur_y = 130
+          jump_velocity = -5  # Reset jump velocity to the initial value
 
     #check for collision
     for pos in cactus_positions:
@@ -110,8 +108,7 @@ while running:
           running = False
 
     # Increase cactus speed as the score increases
-    if score % 5 == 0 and score > 0:  # Increase speed every 5 points
-        cactus_speed += 0.1
+    cactus_speed = 4 + (score // 10) * 0.1  # Gradual speed increase every 10 points
 
 #display the sprites
     #display the background
